@@ -1,4 +1,4 @@
-SOURCES := $(find . -type f -name *.go)
+SOURCES := $(shell find . -type f -name *.go)
 TARGET := wh
 
 build: $(TARGET)
