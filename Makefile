@@ -7,4 +7,5 @@ install: $(TARGET)
 	@install $(TARGET) /bin/
 
 $(TARGET): $(SOURCES)
+	go mod tidy
 	go build -o $(TARGET) cmd/wooordhunt-cli/main.go

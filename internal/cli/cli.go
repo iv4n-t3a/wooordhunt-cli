@@ -23,8 +23,13 @@ func NewCLI(conf config.Config) (CLI, error) {
 	}
 	cli.client = clnt
 
-	initalModel := newInput(&cli)
-	cli.program = *tea.NewProgram(&initalModel)
+	initalModel := newSearch(&cli)
+
+	cli.program = *tea.NewProgram(
+    &initalModel,
+    tea.WithAltScreen(),
+		tea.WithMouseCellMotion(),
+  )
 
 	return cli, nil
 }

@@ -6,5 +6,9 @@ type Tips struct {
 }
 
 type TipsList struct {
-	Tips  []Tips `json:"tips"`
+	Tips []Tips `json:"tips"`
+}
+
+type WordInfo struct {
+	Text string
 }

@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
+
+	// "golang.org/x/net/html"
 
 	"github.com/iv4n-t3a/wooordhunt-cli/config"
 )
@@ -25,13 +28,11 @@ func NewClient(conf config.Config) (Client, error) {
 
 func (c Client) GetTips(word string) (TipsList, error) {
 	url := fmt.Sprintf("http://wooordhunt.ru/openscripts/forjs/get_tips.php?abc=%s", word)
-	resp, err := c.httpClient.Get(url)
+  resp, err := c.httpClient.Get(url)
 
-	if err != nil {
+  if err != nil {
     return TipsList{}, err
-	}
-
-	defer resp.Body.Close()
+  }
 
 	if resp.StatusCode != http.StatusOK {
 		return TipsList{}, errors.New(fmt.Sprintf("Server returned code %d", resp.StatusCode))
@@ -41,4 +42,29 @@ func (c Client) GetTips(word string) (TipsList, error) {
 	dec := json.NewDecoder(resp.Body)
 	err = dec.Decode(&tips)
 	return tips, err
+}
+
+func (c Client) GetWord(word string) (WordInfo, error) {
+	url := fmt.Sprintf("http://wooordhunt.ru/word/%s", word)
+	resp, err := c.httpClient.Get(url)
+
+	if err != nil {
+		return WordInfo{}, err
+	}
+
+	// res := WordInfo{}
+	// tkn := html.NewTokenizer(resp.Body)
+
+	// for {
+	// 	tt := tkn.Next()
+
+	// 	switch {
+	// 	case tt == html.ErrorToken:
+	// 	case tt == html.StartTagToken:
+	// 	case tt == html.TextToken:
+	// 	}
+	// }
+
+	body, _ := io.ReadAll(resp.Body)
+	return WordInfo{Text: string(body)}, nil
 }
