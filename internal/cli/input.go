@@ -56,6 +56,10 @@ func (m *input) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
+func (m *input) UpdateView() {
+
+}
+
 func (m *input) View() string {
 	if len(m.textInput.Value()) == 0 {
 		return fmt.Sprintf(
@@ -93,6 +97,7 @@ func (m *input) View() string {
 			}
 		}
 		m.cachedView += "(esc to quit)\n"
+    m.cachedWord = m.textInput.Value()
 	}
 
 	return m.cachedView
