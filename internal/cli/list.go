@@ -49,7 +49,6 @@ func (m List) View() (res string) {
 	}
 
 	cyan := color.New(color.FgCyan).SprintFunc()
-	// border := color.New(color.BgHiRed).SprintfFunc()
 	maxlen := 0
 
 	for i := range m.tips {

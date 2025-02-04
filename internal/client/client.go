@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
+	"strings"
 
-	// "golang.org/x/net/html"
+	"github.com/anaskhan96/soup"
 
 	"github.com/iv4n-t3a/wooordhunt-cli/config"
 )
@@ -28,11 +28,11 @@ func NewClient(conf config.Config) (Client, error) {
 
 func (c Client) GetTips(word string) (TipsList, error) {
 	url := fmt.Sprintf("http://wooordhunt.ru/openscripts/forjs/get_tips.php?abc=%s", word)
-  resp, err := c.httpClient.Get(url)
+	resp, err := c.httpClient.Get(url)
 
-  if err != nil {
-    return TipsList{}, err
-  }
+	if err != nil {
+		return TipsList{}, err
+	}
 
 	if resp.StatusCode != http.StatusOK {
 		return TipsList{}, errors.New(fmt.Sprintf("Server returned code %d", resp.StatusCode))
@@ -46,25 +46,35 @@ func (c Client) GetTips(word string) (TipsList, error) {
 
 func (c Client) GetWord(word string) (WordInfo, error) {
 	url := fmt.Sprintf("http://wooordhunt.ru/word/%s", word)
-	resp, err := c.httpClient.Get(url)
+	resp, err := soup.GetWithClient(url, &c.httpClient)
 
 	if err != nil {
 		return WordInfo{}, err
 	}
 
-	// res := WordInfo{}
-	// tkn := html.NewTokenizer(resp.Body)
+	doc := soup.HTMLParse(resp)
 
-	// for {
-	// 	tt := tkn.Next()
+	return WordInfo{
+		Word:         word,
+		Meaning:      doc.Find("div", "class", "t_inline_en").FullText(),
+		WordType:     doc.Find("h4", "class", "pos_item").FullText(),
+		Phrases:      ParseList(doc.Find("div", "class", "phrases").HTML()),
+		SimilarWords: ParseList(doc.Find("div", "class", "similar_words").HTML()),
+		WordForms:    ParseList(doc.Find("div", "class", "word_form_block").HTML()),
+	}, nil
+}
 
-	// 	switch {
-	// 	case tt == html.ErrorToken:
-	// 	case tt == html.StartTagToken:
-	// 	case tt == html.TextToken:
-	// 	}
-	// }
+func ParseList(list string) (res []string) {
+	listHTML := strings.Split(list, "<br/>")
 
-	body, _ := io.ReadAll(resp.Body)
-	return WordInfo{Text: string(body)}, nil
+	for i := range listHTML {
+		data := soup.HTMLParse(listHTML[i]).FullText()
+		data = strings.TrimSpace(data)
+
+		if len(data) != 0 {
+			res = append(res, data)
+		}
+	}
+
+	return
 }

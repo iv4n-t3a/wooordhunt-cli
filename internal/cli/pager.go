@@ -62,9 +62,9 @@ func (m Pager) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		if k := msg.String(); k == "ctrl+c" || k == "q" || k == "esc" {
+		if k := msg.String(); k == "backspace" || k == "esc" {
 			if m.parrent != nil {
-				return m, tea.Quit
+				return m.parrent, nil
 			}
 			m.viewport, cmd = m.viewport.Update(msg)
 			cmds = append(cmds, cmd)
@@ -75,7 +75,7 @@ func (m Pager) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			return m.parrent, tea.Batch(cmds...)
 		}
-		if k := msg.String(); k == "ctrl+c" {
+		if k := msg.String(); k == "ctrl+c" || k == "q" {
 			return m, tea.Quit
 		}
 
