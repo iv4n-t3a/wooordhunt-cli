@@ -25,9 +25,9 @@ type WordForm struct {
 }
 
 type WordInfo struct {
-  Word string
-	Meaning      string
-	WordType     string
+	Word         string
+	Meaning      *string
+	WordType     *string
 	Phrases      []string
 	Examples     []string
 	SimilarWords []string

@@ -140,14 +140,20 @@ func (m *Search) OpenWordInfo() (tea.Model, tea.Cmd) {
 		bold(wordInfo.Meaning),
 	)
 
-	text += "Словосочетания:\n"
-	text = AddListOfPhrases(wordInfo.Phrases, text)
+	if wordInfo.Phrases != nil {
+		text += "Словосочетания:\n"
+		text = AddListOfPhrases(wordInfo.Phrases, text)
+	}
 
-	text += "Похожие слова:\n"
-	text = AddListOfPhrases(wordInfo.SimilarWords, text)
+	if wordInfo.SimilarWords != nil {
+		text += "Похожие слова:\n"
+		text = AddListOfPhrases(wordInfo.SimilarWords, text)
+	}
 
-	text += "Формы слова:\n"
-	text = AddListOfPhrases(wordInfo.WordForms, text)
+	if wordInfo.WordForms != nil {
+		text += "Формы слова:\n"
+		text = AddListOfPhrases(wordInfo.WordForms, text)
+	}
 
 	return newPager(text, word, m.cli, m), nil
 }
@@ -166,7 +172,7 @@ func AddListOfPhrases(list []string, text string) string {
 			text += fmt.Sprintf(
 				"    %s%s%s\n",
 				italic(parts[0]),
-        separator,
+				separator,
 				grey(italic(parts[1])),
 			)
 		} else {
@@ -174,7 +180,7 @@ func AddListOfPhrases(list []string, text string) string {
 				"    %s\n",
 				italic(phrase),
 			)
-    }
+		}
 	}
 	return text + "\n"
 }
