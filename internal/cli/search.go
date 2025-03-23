@@ -2,14 +2,12 @@ package cli
 
 import (
 	"fmt"
-	"strings"
 	"sync"
 
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/fatih/color"
 )
 
 type Search struct {
@@ -55,7 +53,7 @@ func (m *Search) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 
 		if msg.Type == tea.KeyEnter && m.tips.selected != -1 {
-			return m.OpenWordInfo()
+			return m.openWordInfo()
 		}
 		if t := msg.Type; t == tea.KeyCtrlJ || t == tea.KeyCtrlK {
 			m.tips, cmd = m.tips.Update(msg)
@@ -122,65 +120,13 @@ func (m *Search) UpdateTips(word string, updateId int) {
 	m.isUpdating = false
 }
 
-func (m *Search) OpenWordInfo() (tea.Model, tea.Cmd) {
+func (m *Search) openWordInfo() (tea.Model, tea.Cmd) {
 	word := m.tips.tips[m.tips.selected].Word
-	wordInfo, err := m.cli.client.GetWord(m.textInput.Value())
+	wordInfo, err := m.cli.client.GetWord(word)
 
 	if err != nil {
-		return newPager("Error", err.Error(), m.cli, m), nil
+    return getErrorPager(err, m.cli, m), nil
 	}
 
-	bold := color.New(color.Bold).SprintFunc()
-	italic := color.New(color.Italic).SprintFunc()
-	grey := color.RGB(100, 100, 100).SprintFunc()
-
-	text := fmt.Sprintf(
-		"\n\nЧасть речи: %s\n\nЗначение: %s\n\n",
-		grey(italic(wordInfo.WordType)),
-		bold(wordInfo.Meaning),
-	)
-
-	if wordInfo.Phrases != nil {
-		text += "Словосочетания:\n"
-		text = AddListOfPhrases(wordInfo.Phrases, text)
-	}
-
-	if wordInfo.SimilarWords != nil {
-		text += "Похожие слова:\n"
-		text = AddListOfPhrases(wordInfo.SimilarWords, text)
-	}
-
-	if wordInfo.WordForms != nil {
-		text += "Формы слова:\n"
-		text = AddListOfPhrases(wordInfo.WordForms, text)
-	}
-
-	return newPager(text, word, m.cli, m), nil
-}
-
-func AddListOfPhrases(list []string, text string) string {
-	italic := color.New(color.Italic).SprintFunc()
-	grey := color.RGB(100, 100, 100).SprintFunc()
-
-	for i := range list {
-		phrase := list[i]
-
-		separator := "—"
-		if strings.Contains(phrase, separator) {
-			parts := strings.Split(phrase, separator)
-
-			text += fmt.Sprintf(
-				"    %s%s%s\n",
-				italic(parts[0]),
-				separator,
-				grey(italic(parts[1])),
-			)
-		} else {
-			text += fmt.Sprintf(
-				"    %s\n",
-				italic(phrase),
-			)
-		}
-	}
-	return text + "\n"
+  return getWordPager(*wordInfo, m.cli, m), nil
 }
