@@ -4,7 +4,9 @@ TARGET := wh
 build: $(TARGET)
 
 install: $(TARGET)
-	@install $(TARGET) /bin/
+	@mkdir -p ~/.config/wh/
+	@install config/config.json ~/.config/wh/
+	@install $(TARGET) ~/.local/bin/
 
 test:
 	go mod tidy
