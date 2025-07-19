@@ -8,6 +8,24 @@ import (
 func htmlToWordInfo(html string, word string) WordInfo {
 	doc := soup.HTMLParse(html)
 
+  if detectLang(word) == En {
+    return enHtmlToWordInfo(doc, word)
+  }
+  return ruHtmlToWordInfo(doc, word)
+}
+
+func enHtmlToWordInfo(doc soup.Root, word string) WordInfo {
+	return WordInfo{
+		Word:         word,
+		Meaning:      fullTextOrNil(doc, "div", "class", "t_inline_en"),
+		WordType:     fullTextOrNil(doc, "h4", "class", "pos_item"),
+		Phrases:      parseHtmlList(htmlOrNil(doc, "div", "class", "phrases")),
+		SimilarWords: parseHtmlList(htmlOrNil(doc, "div", "class", "similar_words")),
+		WordForms:    parseHtmlList(htmlOrNil(doc, "div", "class", "word_form_block")),
+	}
+}
+
+func ruHtmlToWordInfo(doc soup.Root, word string) WordInfo {
 	return WordInfo{
 		Word:         word,
 		Meaning:      fullTextOrNil(doc, "div", "class", "t_inline_en"),
