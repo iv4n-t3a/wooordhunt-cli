@@ -55,7 +55,7 @@ func (m *Search) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.Type == tea.KeyEnter && m.tips.selected != -1 {
 			return m.openWordInfo()
 		}
-		if t := msg.Type; t == tea.KeyCtrlJ || t == tea.KeyCtrlK {
+		if t := msg.Type; t == tea.KeyDown || t == tea.KeyUp {
 			m.tips, cmd = m.tips.Update(msg)
 		} else if t := msg.Type; t == tea.KeyCtrlC || t == tea.KeyEscape {
 			return m, tea.Quit

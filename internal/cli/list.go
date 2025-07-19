@@ -33,9 +33,9 @@ func (m List) Update(msg tea.Msg) (List, tea.Cmd) {
 	case tea.KeyMsg:
 		if m.selected == -1 {
 			m.selected = 0
-		} else if msg.Type == tea.KeyCtrlJ && m.selected < len(m.tips)-1 {
+		} else if msg.Type == tea.KeyDown && m.selected < len(m.tips)-1 {
 			m.selected += 1
-		} else if msg.Type == tea.KeyCtrlK && m.selected > 0 {
+		} else if msg.Type == tea.KeyUp && m.selected > 0 {
 			m.selected -= 1
 		}
 		return m, nil
