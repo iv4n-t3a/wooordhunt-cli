@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"strings"
+	"unicode/utf8"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/fatih/color"
@@ -52,13 +53,13 @@ func (m List) View() (res string) {
 	maxlen := 0
 
 	for i := range m.tips {
-		maxlen = max(maxlen, len(m.tips[i].Word))
+		maxlen = max(maxlen, utf8.RuneCountInString(m.tips[i].Word))
 	}
 
 	for i := range m.tips {
 		word := m.tips[i].Word
 		tips := m.tips[i].Tips
-		spacesCount := maxlen - len(word) + 1
+		spacesCount := maxlen - utf8.RuneCountInString(word) + 1
 		spaces := strings.Repeat(" ", spacesCount)
 
 		if i == m.selected {
