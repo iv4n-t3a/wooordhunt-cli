@@ -11,7 +11,7 @@ const (
 
 const enAlphabet = "abcdefghiklmnopqrstvxyz"
 
-func detectLang(s string) Lang {
+func DetectLang(s string) Lang {
 	for i := range s {
 		if strings.Contains(enAlphabet, string(s[i])) {
 			return En

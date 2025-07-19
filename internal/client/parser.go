@@ -5,38 +5,38 @@ import (
 	"strings"
 )
 
-func htmlToWordInfo(html string, word string) WordInfo {
+func HtmlToWordInfo(html string, word string) WordInfo {
 	doc := soup.HTMLParse(html)
 
-  if detectLang(word) == En {
-    return enHtmlToWordInfo(doc, word)
+  if DetectLang(word) == En {
+    return EnHtmlToWordInfo(doc, word)
   }
-  return ruHtmlToWordInfo(doc, word)
+  return RuHtmlToWordInfo(doc, word)
 }
 
-func enHtmlToWordInfo(doc soup.Root, word string) WordInfo {
+func EnHtmlToWordInfo(doc soup.Root, word string) WordInfo {
 	return WordInfo{
 		Word:         word,
-		Meaning:      fullTextOrNil(doc, "div", "class", "t_inline_en"),
-		WordType:     fullTextOrNil(doc, "h4", "class", "pos_item"),
-		Phrases:      parseHtmlList(htmlOrNil(doc, "div", "class", "phrases")),
-		SimilarWords: parseHtmlList(htmlOrNil(doc, "div", "class", "similar_words")),
-		WordForms:    parseHtmlList(htmlOrNil(doc, "div", "class", "word_form_block")),
+		Meaning:      FullTextOrNil(doc, "div", "class", "t_inline_en"),
+		WordType:     FullTextOrNil(doc, "h4", "class", "pos_item"),
+		Phrases:      ParseHtmlList(HtmlOrNil(doc, "div", "class", "phrases")),
+		SimilarWords: ParseHtmlList(HtmlOrNil(doc, "div", "class", "similar_words")),
+		WordForms:    ParseHtmlList(HtmlOrNil(doc, "div", "class", "word_form_block")),
 	}
 }
 
-func ruHtmlToWordInfo(doc soup.Root, word string) WordInfo {
+func RuHtmlToWordInfo(doc soup.Root, word string) WordInfo {
 	return WordInfo{
 		Word:         word,
-		Meaning:      fullTextOrNil(doc, "div", "class", "t_inline_en"),
-		WordType:     fullTextOrNil(doc, "h4", "class", "pos_item"),
-		Phrases:      parseHtmlList(htmlOrNil(doc, "div", "class", "phrases")),
-		SimilarWords: parseHtmlList(htmlOrNil(doc, "div", "class", "similar_words")),
-		WordForms:    parseHtmlList(htmlOrNil(doc, "div", "class", "word_form_block")),
+		Meaning:      FullTextOrNil(doc, "div", "class", "t_inline_en"),
+		WordType:     FullTextOrNil(doc, "h4", "class", "pos_item"),
+		Phrases:      ParseHtmlList(HtmlOrNil(doc, "div", "class", "phrases")),
+		SimilarWords: ParseHtmlList(HtmlOrNil(doc, "div", "class", "similar_words")),
+		WordForms:    ParseHtmlList(HtmlOrNil(doc, "div", "class", "word_form_block")),
 	}
 }
 
-func parseHtmlList(list *string) (res []string) {
+func ParseHtmlList(list *string) (res []string) {
 	if list == nil {
 		return nil
 	}
@@ -59,7 +59,7 @@ func parseHtmlList(list *string) (res []string) {
 	return
 }
 
-func fullTextOrNil(doc soup.Root, args ...string) *string {
+func FullTextOrNil(doc soup.Root, args ...string) *string {
 	root := doc.Find(args...)
 	if root.Error != nil {
 		return nil
@@ -68,7 +68,7 @@ func fullTextOrNil(doc soup.Root, args ...string) *string {
 	return &res
 }
 
-func htmlOrNil(doc soup.Root, args ...string) *string {
+func HtmlOrNil(doc soup.Root, args ...string) *string {
 	root := doc.Find(args...)
 	if root.Error != nil {
 		return nil

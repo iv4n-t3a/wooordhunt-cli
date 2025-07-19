@@ -60,6 +60,6 @@ func (c Client) GetWord(word string) (*WordInfo, error) {
 		return nil, err
 	}
 
-	res := htmlToWordInfo(string(doc), word)
+	res := HtmlToWordInfo(string(doc), word)
 	return &res, nil
 }
