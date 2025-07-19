@@ -3,7 +3,6 @@ package config
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"os"
 
 	"github.com/alecthomas/kong"
@@ -38,7 +37,6 @@ func ParseConfig() (Config, error) {
 	if len(opts.Config) == 0 {
     for i := range confDirs {
       conf, err = parseConfig(confDirs[i])
-      log.Println(err)
       if err == nil {
         break
       }
