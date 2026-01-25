@@ -20,6 +20,7 @@ var errFileNotExists = errors.New("File not exists")
 
 type Config struct {
 	Insecure bool `json:"disable_ssl"`
+  UserAgent string `json:"user_agent"`
 }
 
 type Options struct {

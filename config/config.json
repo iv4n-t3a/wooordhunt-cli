@@ -1,3 +1,4 @@
 {
-  "disable_ssl": false
+  "disable_ssl": false,
+  "user_agent": "wooordhunt-cli/1.0 https://github.com/iv4n-t3a/wooordhunt-cli"
 }
