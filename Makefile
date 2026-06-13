@@ -5,6 +5,7 @@ build: $(TARGET)
 
 install: $(TARGET)
 	@mkdir -p ~/.config/wh/
+	@mkdir -p ~/.local/bin/
 	@install config/config.json ~/.config/wh/
 	@install $(TARGET) ~/.local/bin/
 
